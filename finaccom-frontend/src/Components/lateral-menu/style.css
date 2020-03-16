@@ -1,0 +1,18 @@
+.menu {
+  width: 20vw;
+  height: 100vh;
+  position: fixed;
+}
+.menu div.header-menu {
+  background-color: darkslategrey;
+  height: 20vh;
+}
+.body-menu {
+  background-color: rgb(60, 102, 102);
+  height: 70vh;
+  padding: 20px;
+}
+.footer-menu{
+  background-color: rgb(60, 102, 102);
+  height: 10vh;
+}
