@@ -10,7 +10,8 @@ import {isAuthenticated} from './services/auth'
 import Login from './pages/Login'
 import Register from './pages/Register'
 
-const App = () => (
+const App = () => {
+  return (
     <BrowserRouter>
       <Switch>
         <Route path="/login" component={Login}/>
@@ -18,7 +19,8 @@ const App = () => (
         <RouteAuth />
       </Switch>
     </BrowserRouter>
-)
+  )
+}
 
 const RouteAuth = () => isAuthenticated() ? <Routes /> : <Redirect to="/login"/>
 

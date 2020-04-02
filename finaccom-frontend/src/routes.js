@@ -2,6 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 
 //Componets
+import Header from './Components/Header';
 import Sidenav from './Components/Sidenav'
 
 //Routes private
@@ -21,6 +22,7 @@ const RoutesPrivete = () => (
 
 const Routes = () => (
   <main>
+    <Header />
     <Sidenav />
     <RoutesPrivete />
   </main>

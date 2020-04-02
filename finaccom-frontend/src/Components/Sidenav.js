@@ -6,10 +6,10 @@ import loginTeste from '../assets/loginteste.png'
 import bgSidenav from '../assets/bgSidenav.jpg'
 
 const Sidenav = ()=> {
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav')
-    M.Sidenav.init(elems, {})
-  })
+  React.useEffect(()=>{
+    const sidenav = document.querySelectorAll('.sidenav')
+    M.Sidenav.init(sidenav, {})
+  }, [])
   return(
   <>
     <ul id="slide-out" className="sidenav sidenav-fixed">
@@ -27,7 +27,7 @@ const Sidenav = ()=> {
       <li><Link className="waves-effect" to="/Receitas">Receitas</Link></li>
       <li><Link className="waves-effect" to="/Despesas">Despesas</Link></li>
       <li><Link className="waves-effect" to="/Planejamento">Planejamento</Link></li>
-      <li><div class="divider"></div></li>
+      <li><div className="divider"></div></li>
     </ul>
     <button data-target="slide-out" className="sidenav-trigger"><i className="material-icons">menu</i></button>
   </>        

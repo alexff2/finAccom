@@ -1,0 +1,35 @@
+.card-panel-dash{
+  background-color: white;
+  padding: 5px;
+  width: 220px;
+  height: 70px;
+  border-radius: 10px;
+  box-shadow: 2px 1px 2px #868585;
+}
+
+    .img_card{
+      margin-left: -35px;
+    }
+
+    .text-card {
+      margin-top: -20px;
+      padding: 0px;
+      font-weight: 700;
+    }
+
+.card-chart {
+  background-color: white;
+  padding: 5px;
+  width: 500px;
+  height: 350px;
+  border-radius: 10px;
+  box-shadow: 2px 1px 2px #868585;
+}
+
+.card-table {
+  background-color: white;
+  padding: 5px;
+  width: 500px;
+  border-radius: 10px;
+  box-shadow: 2px 1px 2px #868585;
+}
