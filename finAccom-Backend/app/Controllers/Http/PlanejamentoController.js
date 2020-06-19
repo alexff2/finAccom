@@ -3,7 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
- const plan = use('App/Models/Planejamento')
+const plan = use('App/Models/Planejamento')
 
 class PlanejamentoController {
   /**
@@ -29,9 +29,12 @@ class PlanejamentoController {
    * @param {auth} ctx.auth
    */
   async store ({ request, auth }) {
-    const data = request.all(['description, month, status'])
-    const Plan = await plan.create({ user_id: auth.user.id, ...data})
-    return Plan
+    const data = request.all(['description, month, monthInicial, status'])
+    var monthFinal = new Date(data.monthInicial);
+    monthFinal.setMonth(monthFinal.getMonth() + data.month)
+    //const plan = {user_id: auth.user.id, ...data}
+    //const Plan = await plan.create({ user_id: auth.user.id, ...data})
+    return monthFinal
   }
 
   /**
@@ -49,7 +52,7 @@ class PlanejamentoController {
     Plan.month = month
     Plan.status = status
     await Plan.save()
-    
+
     return Plan
   }
 
@@ -62,7 +65,7 @@ class PlanejamentoController {
    */
   async destroy ({ params}) {
     const Plan = await plan.findOrFail(params.id)
-    
+
     Plan.delete()
   }
 }

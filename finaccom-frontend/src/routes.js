@@ -10,13 +10,15 @@ import Home from './pages/Home'
 import Receitas from './pages/Receitas'
 import Despesas from './pages/Despesas'
 import Planejamento from './pages/Planejamento'
+import Categoria from './pages/Categoria'
 
 const RoutesPrivete = () => (
   <>
     <Route path="/" exact component={Home}/>
-    <Route path="/Receitas" exact component={Receitas}/>
-    <Route path="/Despesas" exact component={Despesas}/>
-    <Route path="/Planejamento" exact component={Planejamento}/>
+    <Route path="/receitas" exact component={Receitas}/>
+    <Route path="/despesas" exact component={Despesas}/>
+    <Route path="/planejamentos" exact component={Planejamento}/>
+    <Route path="/categorias" exact component={Categoria}/>
   </> 
 )
 

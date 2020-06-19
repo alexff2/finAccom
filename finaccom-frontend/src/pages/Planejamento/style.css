@@ -1,0 +1,10 @@
+.planCad {
+  display: none;
+}
+.planItens {
+  display: none;
+}
+.btnNav:hover {
+  cursor: pointer;
+  font-weight: 600;
+}

@@ -5,8 +5,8 @@ const Receitas = () => {
   useEffect(()=>{
     const modal = document.querySelectorAll('.modal')
     const select = document.querySelectorAll('.select')
-    Modal.init(modal, {})
-    FormSelect.init(select, {})
+    Modal.init(modal)
+    FormSelect.init(select)
   }, [])
   return (
     <>
@@ -99,6 +99,8 @@ const Receitas = () => {
             </tr>
           </tbody>
         </table>
+        <br/>
+        <br/>
       </div>
 
       <div className="fixed-action-btn">

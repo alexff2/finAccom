@@ -8,14 +8,6 @@ class ReceitasSchema extends Schema {
     this.create('receitas', (table) => {
       table.increments()
       table
-        .integer('user_id')
-        .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('users')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
-      table
         .integer('planItens_id')
         .unsigned()
         .notNullable()

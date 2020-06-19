@@ -8,14 +8,6 @@ class DespesasSchema extends Schema {
     this.create('despesas', (table) => {
       table.increments()
       table
-        .integer('user_id')
-        .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('users')
-        .onUpdate('CASCADE')
-        .onDelete('CASCADE')
-      table
         .integer('planItens_id')
         .unsigned()
         .notNullable()
