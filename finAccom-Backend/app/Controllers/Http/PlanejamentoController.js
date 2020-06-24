@@ -13,7 +13,7 @@ class PlanejamentoController {
    * @param {object} ctx
    * @param {auth} ctx.auth
    */
-  async index ({ auth}) {
+  async index ({ auth }) {
     return await plan
       .query()
       .where('user_id', '=', auth.user.id)
@@ -63,8 +63,9 @@ class PlanejamentoController {
    * @param {object} ctx
    * @param {params} ctx.params
    */
-  async destroy ({ params}) {
+  async destroy ({ params, auth }) {
     const Plan = await plan.findOrFail(params.id)
+
 
     Plan.delete()
   }

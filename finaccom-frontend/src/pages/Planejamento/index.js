@@ -6,19 +6,7 @@ import ModalCadPlan from './modaCadPlan'
 import PlanItens from './planItens'
 
 export default function Planejamento() {
-  const [ plan, setPlan ] = useState([{
-    description: "Planejamento inicial",
-    month: "6 meses",
-    status: "Finalizado"
-  }, {
-    description: "Primeiro semestre 2020",
-    month: "6 meses",
-    status: "Iniciado"
-  },{
-    description: "Outro teste",
-    month: "8 meses",
-    status: "Lançamento"
-  }])
+  const [ plan, setPlan ] = useState([])
 
   useEffect(()=>{
     const select = document.querySelectorAll('.select')

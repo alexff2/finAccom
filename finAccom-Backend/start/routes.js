@@ -7,10 +7,15 @@ const Route = use('Route')
 Route.post('/register', 'AuthController.register')
 Route.post('/authenticate', 'AuthController.authenticate')
 
-
+//
 //Rotas de planejamento
 Route.group(()=>{
   Route.resource('planejamento','PlanejamentoController').apiOnly().except('show')
+}).middleware(['auth'])
+
+//Rotas de categorias
+Route.group(()=>{
+  Route.resource('categoria','CategoriaController').apiOnly().except('show')
 }).middleware(['auth'])
 
 //Rotas de planejamento_itens

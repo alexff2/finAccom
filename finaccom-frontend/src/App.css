@@ -37,3 +37,8 @@ body {
     display: initial;
   }
 }
+
+/* Defult Buttons */
+.bt-defult {
+  cursor: pointer;
+}

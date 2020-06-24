@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import M from 'materialize-css/dist/js/materialize.min.js'
 
-import { logout } from '../services/auth'
+import { logout, getUser } from '../services/auth'
 import loginTeste from '../assets/loginteste.png'
 import bgSidenav from '../assets/bgSidenav.jpg'
 
@@ -11,6 +11,8 @@ const Sidenav = ()=> {
     const sidenav = document.querySelectorAll('.sidenav')
     M.Sidenav.init(sidenav, {})
   }, [])
+
+  const {username, email} = JSON.parse(getUser())
 
   function handleLogout () {
     logout()
@@ -24,8 +26,8 @@ const Sidenav = ()=> {
             <img src={bgSidenav} alt="backgroudSide"/>
           </div>
           <div><img className="circle" src={loginTeste} alt="imageUser" /></div>
-          <div><span className="white-text name">John Doe</span></div>
-          <div><span className="white-text email">jdandturk@gmail.com</span></div>
+          <div><span className="white-text name">{username}</span></div>
+          <div><span className="white-text email">{email}</span></div>
         </div>
       </li>
       <li><Link className="waves-effect" to="/">Dashbord</Link></li>

@@ -2,45 +2,33 @@
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
 
-/**
- * Resourceful controller for interacting with categorias
- */
+const Categoria = use('App/Models/Categoria')
+
 class CategoriaController {
   /**
    * Show a list of all categorias.
    * GET categorias
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
-  async index ({ request, response, view }) {
-  }
-
-  /**
-   * Render a form to be used for creating a new categoria.
-   * GET categorias/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
+  async index ({ auth }) {
+    return await Categoria
+    .query()
+    .where('user_id', '=', auth.user.id)
+    .fetch()
   }
 
   /**
    * Create/save a new categoria.
    * POST categorias
    *
-   * @param {object} ctx
    * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, auth }) {
+    const { descricao } = request.all()
+
+    const categoria = await Categoria.create({ descricao, user_id: auth.user.id })
+
+    return categoria
   }
 
   /**
@@ -50,21 +38,8 @@ class CategoriaController {
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
-   * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-  }
-
-  /**
-   * Render a form to update an existing categoria.
-   * GET categorias/:id/edit
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async edit ({ params, request, response, view }) {
   }
 
   /**
@@ -75,18 +50,33 @@ class CategoriaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, auth }) {
+
+    const { descricao } = request.all()
+
+    const categoria = await Categoria.findOrFail(params.id)
+
+    if (auth.user.id === categoria.user_id) {
+      categoria.descricao = descricao
+      categoria.save()
+
+      return categoria
+    }
   }
 
   /**
    * Delete a categoria with id.
    * DELETE categorias/:id
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, auth }) {
+    const categoria = await Categoria.findOrFail(params.id)
+
+    if (auth.user.id === categoria.user_id) {
+      await categoria.delete()
+
+      return params.id
+    }
+    return {msg: "Usuário não autorizado"}
   }
 }
 
