@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import { Modal, FormSelect } from 'materialize-css'
+import { Formik, Form, Field, ErrorMessage } from 'formik'
+import * as yup from 'yup'
 
 const Despesas = ()=> {
   useEffect(()=>{
@@ -8,97 +10,47 @@ const Despesas = ()=> {
     Modal.init(modal)
     FormSelect.init(select)
   }, [])
+
   return (
     <>
-      <div className="table">
-        <div className="table-title white-text red">
-          Despesas
+      <div className="white">
+        <nav className="red row">
+          <div className="col s1 offset-s1">
+            <div className="title-componet">Despesas</div>
+          </div>
+        </nav>
+        <div className="row">
+          <table className="highlight col s10 offset-s1">
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Data</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Moradia</td>
+                <td>R$ 500,00</td>
+                <td>15/10/2020</td>
+                <td>
+                <i 
+                    className="material-icons bt-defult modal-trigger" 
+                    data-target="modalCategoria"
+                    onClick={null}>
+                    edit
+                  </i>
+                  <i 
+                    className="material-icons bt-defult" 
+                    onClick={null}>
+                    delete_forever
+                  </i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <table className="highlight">
-          <thead>
-            <tr>
-              <th>Descrição</th>
-              <th>Valor previsto</th>
-              <th>Valor real</th>
-              <th>Diferença</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Moradia</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Moradia</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-            <tr>
-              <td>Texto um pouco maior</td>
-              <td>R$ 500,00</td>
-              <td>R$ 00</td>
-              <td>R$ 00</td>
-              <td><button className="btn-floating waves-effect waves-light red">
-                <i className="material-icons">beenhere</i>
-              </button></td>
-            </tr>
-          </tbody>
-        </table>
         <br/>
         <br/>
       </div>

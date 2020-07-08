@@ -9,9 +9,9 @@ import {getToken} from '../../services/auth'
 export default function Categoria() {
   const [ categoria, setCategoria ] = useState([])
   const [ update, setUpdate ] = useState([])
-
+  
   const token = getToken()
-
+  
   useEffect(()=>{
     const modal = document.querySelectorAll('.modal')
     Modal.init(modal)
@@ -59,8 +59,9 @@ export default function Categoria() {
   return (
     <div className="white">
       <nav className="row blue">
-        <div className="col s1 offset-s1">Categoria</div>
-      </nav><br/>
+        <div className="col s1 offset-s1 title-componet">Categoria</div>
+      </nav>
+      <br/>
       <Formik
         onSubmit={handleSubmit}
         validationSchema={validation}

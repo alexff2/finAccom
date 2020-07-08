@@ -12,14 +12,21 @@ class PlanItenController {
    * GET planitens
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
    */
-  async index ({ auth }) {
-    return planiten
-      .query()
-      .where('user_id', '=', auth.user.id)
-      .fetch()
+  async show ({ auth, params }) {
+
+    const Plan = await plan.findOrFail(params.id)
+
+    if (Plan.user_id === auth.user.id){
+      return await planiten
+        .query()
+        .where('plan_id', '=', params.id)
+        .fetch()
+    }
+
+    return {
+      error: "Erro ao cadastrar item, entre em contato com Administrador de sistema"
+    }
   }
 
   /**
@@ -29,12 +36,17 @@ class PlanItenController {
    * @param {object} ctx
    * @param {Request} ctx.request
    */
-  async store ({ request }) {
-    const data = request.all(['plan_id, description, valor, vencimento, tipo1, tipo2'])
+  async store ({ request, auth }) {
+    const data = request.all(['plan_id, cat_id, description, valor, vencimento, tipo1, tipo2'])
 
     const Plan = await plan.findOrFail(data.plan_id)
-    if (Plan){
-      return await planiten.create({user_id: Plan.user_id, ...data})
+
+    if (Plan.user_id === auth.user.id){
+      return await planiten.create( data )
+    }
+
+    return {
+      error: "Erro ao cadastrar item, entre em contato com Administrador de sistema"
     }
   }
 
@@ -46,13 +58,13 @@ class PlanItenController {
    * @param {object} ctx
    * @param {Request} ctx.request
    */
-  async update ({ params, request }) {
-    const {plan_id, description, valor, vencimento, tipo1, tipo2} = request.all()
-    
+  async update ({ params, request, auth }) {
+    const {plan_id, cat_id, description, valor, vencimento, tipo1, tipo2} = request.all()
+
     const Plan = await plan.findOrFail(plan_id)
-    if(Plan){
+    if (Plan.user_id === auth.user.id) {
       const PlanIten = await planiten.findOrFail(params.id)
-      PlanIten.plan_id = plan_id
+      PlanIten.cat_id = cat_id
       PlanIten.description = description
       PlanIten.valor = valor
       PlanIten.vencimento = vencimento
@@ -69,13 +81,20 @@ class PlanItenController {
    * DELETE planitens/:id
    *
    * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
+   * @param {object} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, auth, response }) {
     const PlanIten = await planiten.findOrFail(params.id)
-    
-    PlanIten.delete()
+
+    const Plan = await plan.findOrFail(PlanIten.plan_id)
+
+    if (Plan.user_id !== auth.user.id){
+      return response.status(401).json({Erro: "User dont autorization, talke your admin"})
+    }
+
+    await PlanIten.delete()
+
+    return params.id
   }
 }
 

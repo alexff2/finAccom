@@ -28,7 +28,6 @@ class PlanItensSchema extends Schema {
       table.date('vencimento').notNullable()
       table.string('tipo1',1).notNullable()
       table.string('tipo2',1).notNullable()
-      table.string('unico', 3).notNullable()
       table.timestamps()
     })
   }

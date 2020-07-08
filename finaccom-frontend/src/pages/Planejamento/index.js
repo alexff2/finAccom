@@ -1,57 +1,90 @@
 import React, { useEffect, useState } from 'react'
-import { FormSelect, Modal } from 'materialize-css'
+import { Modal } from 'materialize-css'
+import {Formik, Form, Field, ErrorMessage} from 'formik'
+import * as yup from 'yup'
 
-import "./style.css"
-import ModalCadPlan from './modaCadPlan'
-import PlanItens from './planItens'
+import api from '../../services/api'
+import { getToken } from '../../services/auth'
+import { FormatData } from '../../functions/functions'
 
-export default function Planejamento() {
+export default function Planejamento({ history }) {
   const [ plan, setPlan ] = useState([])
+  const [ update, setUpdate ] = useState([])
+
+  const token = getToken()
 
   useEffect(()=>{
-    const select = document.querySelectorAll('.select')
-    FormSelect.init(select)
-
-    const modal = document.querySelectorAll('.modal')
+    const modal = document.querySelectorAll('modal')
     Modal.init(modal)
-  }, [])
+
+    api.get('planejamento', {
+      headers: {
+        Authentication: `Bearer ${token}`
+      }
+    }).then( resp => {
+      const planejamento = resp.data 
+      setPlan(planejamento.map( item => {
+        var { id, description, month, monthInicial, monthFinal, status} = item
+        monthInicial = FormatData(monthInicial)
+        monthFinal = FormatData(monthFinal)
+        return { id, description, month, monthInicial, monthFinal, status}
+      }))
+    }).catch( error => alert('Erro na conexão, tente novamente!'))
+  }, [token])
+
+  const validation = yup.object().shape({
+    description: yup.string().required(),
+    monthInicial: yup.date().required(),
+    month: yup.number().required()
+  })
   
-  function handlePlanItens() {
-    document.getElementById('idPlan').style.display = 'none'
-    document.getElementById('idPlanItens').style.display = 'block'
+  function planItens( id, { target } ) {
+    if (target.tagName !== 'I') {
+      history.push({
+        pathname: '/planejamentos/itens',
+        state: id
+      })
+    }
   }
 
-  function handlePlanos ( data ) {
-    if (data.status === "Finalizado") {
-      return (
-      <tr>
-        <td>{data.description}</td>
-        <td>{data.month}</td>
-        <td className="red-text">{data.status}</td>
-      </tr>
-    )}
-    if (data.status === "Iniciado") {
-      return (
-      <tr>
-        <td>{data.description}</td>
-        <td>{data.month}</td>
-        <td className="green-text">{data.status}</td>
-        <button className="btn">
-          Finalizar
-        </button>
-      </tr>
-    )}
-    if (data.status === "Lançamento") {
-      return (
-      <tr onClick={handlePlanItens}>
-        <td>{data.description}</td>
-        <td>{data.month}</td>
-        <td className="blue-text">{data.status}</td>
-        <button className="btn">
-          Iniciar
-        </button>
-      </tr>
-    )}
+  function colorStatus ( data ) {
+    if (data === "Lançamento") {
+      return "blue-text"
+    }
+    if (data === "Iniciado") {
+      return "green-text"
+    }
+    if (data === "Finalizado") {
+      return "red-text"
+    }
+  }
+
+  const handleSubmit = async ( values, { resetForm } ) => {
+    const { data } = await api.post('planejamento', values, {
+      headers: {
+        Authentication: `Bearer ${token}`
+      }
+    })
+    setPlan([...plan, data])
+    resetForm()
+  }
+
+  const handleUpdate =  async ( value ) => {
+    const { data } = await api.put(`planejamento/${value.id}`, value, {
+      headers: {
+        Authentication: `Bearer ${token}`
+    }})
+    
+    setPlan( plan.map( item => item.id === data.id ? data : item) )
+  }
+
+  const handleDelete = async ( id ) => {
+    const { data } = await api.delete(`planejamento/${id}`, {
+      headers: {
+        Authentication: `Bearer ${token}`
+    }})
+
+    setPlan( plan.filter( item => item.id !== data) )
   }
 
   return (
@@ -61,7 +94,7 @@ export default function Planejamento() {
         <nav>
           <div className="nav-wrapper orange row">
             <div className="col s9 offset-s1">
-              <div className="breadcrumb">Planejamento</div>
+              <div className="breadcrumb ">Planejamento</div>
             </div>
           </div>
         </nav>
@@ -78,7 +111,33 @@ export default function Planejamento() {
                 </tr>
               </thead>
               <tbody>
-              {plan.map(item => handlePlanos(item))}
+              {plan.map(item => (
+                <tr 
+                  key={item.id}
+                  onClick={item.status === "Lançamento"? 
+                  (e) => planItens(item.id,e) 
+                  : null}
+                >
+                  <td>{item.description}</td>
+                  <td>{item.month} Meses</td>
+                  <td 
+                    className={colorStatus(item.status)}
+                  >{item.status}</td>
+                  {item.status === "Lançamento"?
+                  <td>
+                    <i
+                      className="material-icons bt-defult modal-trigger" 
+                      data-target="UpdatePlanModal"
+                      onClick={e => setUpdate([item])}
+                      >edit</i>
+                    <i 
+                      className="material-icons bt-defult" 
+                      onClick={e => handleDelete(item.id)}
+                      >delete_forever</i>
+                    </td>
+                  : ""}
+                </tr>
+              ))}
               </tbody>
             </table>
             <br/>
@@ -105,9 +164,104 @@ export default function Planejamento() {
       
       </div>
 
-      <PlanItens />
+      <div className="modal" id="cadPlanModal">
+        <div className="modal-content">
+          <h4>Cadastro de planejamento</h4>
+          <Formik
+            onSubmit={handleSubmit}
+            validationSchema={validation}
+            initialValues={{
+              description: '',
+              monthInicial: '',
+              month: '',
+              status: 'Lançamento'
+            }}
+          >
+            <Form>
+              <Field type="hidden" name="status" />
+              <div className="input-field">
+                <Field type="text" id="description" name="description" />
+                <span>
+                  <ErrorMessage name="description"/>
+                </span>
+                <label htmlFor="description">Descrição</label>
+              </div>
+              <div className="row">
+                <div className="input-field col s12 m6">
+                  <Field type="date" id="monthInicial" name="monthInicial"/>
+                  <span>
+                    <ErrorMessage name="monthInicial"/>
+                  </span>
+                  <label htmlFor="monthInicial">Data Inicial</label>
+                </div>
+                <div className="input-field col s12 m6">
+                  <Field type="number" id="month" name="month"/>
+                  <span>
+                    <ErrorMessage name="month"/>
+                  </span>
+                  <label htmlFor="month">Duração em meses</label>
+                </div>
+              </div>
+              <button 
+                type="submit" 
+                className="btn modal-action modal-close waves-effect"
+                data-target="modal"
+              >Cadastrar</button>
+            </Form>
+          </Formik>
+        </div>
+      </div>
 
-      <ModalCadPlan />      
+      <div className="modal" id="UpdatePlanModal">
+        <div className="modal-content">
+          <h4>Cadastro de planejamento</h4>
+          {update.map( item => (
+            <Formik
+              onSubmit={handleUpdate}
+              validationSchema={validation}
+              initialValues={{
+                description: item.description,
+                monthInicial: item.monthInicial,
+                month: item.month,
+                id: item.id
+              }}
+              key={item.id}
+            >
+              <Form>
+                <Field type="hidden" name="id" />
+                <div className="input-field">
+                  <Field type="text" id="description" name="description" />
+                  <span>
+                    <ErrorMessage name="description"/>
+                  </span>
+                  <label htmlFor="description">Descrição</label>
+                </div>
+                <div className="row">
+                  <div className="input-field col s12 m6">
+                    <Field type="date" id="monthInicial" name="monthInicial"/>
+                    <span>
+                      <ErrorMessage name="monthInicial"/>
+                    </span>
+                    <label htmlFor="monthInicial">Data Inicial</label>
+                  </div>
+                  <div className="input-field col s12 m6">
+                    <Field type="number" id="month" name="month"/>
+                    <span>
+                      <ErrorMessage name="month"/>
+                    </span>
+                    <label htmlFor="month">Duração em meses</label>
+                  </div>
+                </div>
+                <button 
+                  type="submit" 
+                  className="btn modal-action modal-close waves-effect"
+                  data-target="modal"
+                >Cadastrar</button>
+              </Form>
+            </Formik>
+          ))}
+        </div>
+      </div>     
     </>
   )
 }

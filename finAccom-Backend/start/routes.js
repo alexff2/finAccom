@@ -13,6 +13,9 @@ Route.group(()=>{
   Route.resource('planejamento','PlanejamentoController').apiOnly().except('show')
 }).middleware(['auth'])
 
+//Rota de modificação de status de planejamento
+Route.put('planejamento/status/:id', 'PlanejamentoController.modifyStatus').middleware(['auth'])
+
 //Rotas de categorias
 Route.group(()=>{
   Route.resource('categoria','CategoriaController').apiOnly().except('show')
@@ -20,7 +23,7 @@ Route.group(()=>{
 
 //Rotas de planejamento_itens
 Route.group(()=>{
-  Route.resource('plan','PlanItenController').apiOnly().except('show')
+  Route.resource('planitens','PlanItenController').apiOnly().except('index')
 }).middleware(['auth'])
 
 //Rotas de despesas

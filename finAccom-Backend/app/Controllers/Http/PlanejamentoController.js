@@ -3,7 +3,7 @@
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 
-const plan = use('App/Models/Planejamento')
+const Planejamento = use('App/Models/Planejamento')
 
 class PlanejamentoController {
   /**
@@ -14,7 +14,7 @@ class PlanejamentoController {
    * @param {auth} ctx.auth
    */
   async index ({ auth }) {
-    return await plan
+    return await Planejamento
       .query()
       .where('user_id', '=', auth.user.id)
       .fetch()
@@ -30,11 +30,13 @@ class PlanejamentoController {
    */
   async store ({ request, auth }) {
     const data = request.all(['description, month, monthInicial, status'])
+
     var monthFinal = new Date(data.monthInicial);
     monthFinal.setMonth(monthFinal.getMonth() + data.month)
-    //const plan = {user_id: auth.user.id, ...data}
-    //const Plan = await plan.create({ user_id: auth.user.id, ...data})
-    return monthFinal
+
+    const plan = {user_id: auth.user.id, ...data, monthFinal}
+
+    return await Planejamento.create( plan )
   }
 
   /**
@@ -45,15 +47,25 @@ class PlanejamentoController {
    * @param {params} ctx.params
    * @param {Request} ctx.request
    */
-  async update ({ params, request }) {
-    const { description, month, status } = request.all()
-    const Plan = await plan.findOrFail(params.id)
-    Plan.description = description
-    Plan.month = month
-    Plan.status = status
-    await Plan.save()
+  async update ({ params, request, auth }) {
+    const { description, month, monthInicial } = request.all()
 
-    return Plan
+    var monthFinal = new Date(monthInicial);
+    monthFinal.setMonth(monthFinal.getMonth() + month)
+
+    const Plan = await Planejamento.findOrFail(params.id)
+
+    if (auth.user.id === Plan.user_id) {
+      Plan.description = description
+      Plan.month = month
+      Plan.monthInicial = monthInicial
+      Plan.monthFinal = monthFinal
+      await Plan.save()
+
+      return Plan
+    }
+
+    return {msg: "Usuário não autorizado"}
   }
 
   /**
@@ -64,10 +76,26 @@ class PlanejamentoController {
    * @param {params} ctx.params
    */
   async destroy ({ params, auth }) {
-    const Plan = await plan.findOrFail(params.id)
+    const Plan = await Planejamento.findOrFail(params.id)
 
+    if (auth.user.id === Plan.user_id) {
+      Plan.delete()
 
-    Plan.delete()
+      return params.id
+    }
+  }
+
+  async modifyStatus ({ request, auth, params }) {
+    const { status } = request.all()
+
+    const Plan = await Planejamento.findOrFail( params.id )
+
+    if (auth.user.id === Plan.user_id) {
+      Plan.status = status
+      return await Plan.save()
+    }
+
+    return {msg: "Usuário não autorizado"}
   }
 }
 

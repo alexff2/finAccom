@@ -15,16 +15,7 @@ body {
   box-shadow: 2px 1px 2px #868585;
 }
 
-/*Default style table*/
-.table {
-  background-color: white;
-  padding: 5px;
-  box-shadow: 2px 1px 2px #868585;
-  margin: -10px 20px auto auto;
-}
-.table-title {
-  margin: -5px;
-  padding: 10px;
+.title-componet {
   font-size: 14pt;
 }
 
@@ -41,4 +32,8 @@ body {
 /* Defult Buttons */
 .bt-defult {
   cursor: pointer;
+}
+.btnNav:hover {
+  cursor: pointer;
+  font-weight: 600;
 }

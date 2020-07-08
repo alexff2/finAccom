@@ -10,6 +10,7 @@ import Home from './pages/Home'
 import Receitas from './pages/Receitas'
 import Despesas from './pages/Despesas'
 import Planejamento from './pages/Planejamento'
+import PlanejamentoIntens from './pages/Planejamento/planItens'
 import Categoria from './pages/Categoria'
 
 const RoutesPrivete = () => (
@@ -18,6 +19,7 @@ const RoutesPrivete = () => (
     <Route path="/receitas" exact component={Receitas}/>
     <Route path="/despesas" exact component={Despesas}/>
     <Route path="/planejamentos" exact component={Planejamento}/>
+    <Route path="/planejamentos/itens" exact component={PlanejamentoIntens}/>
     <Route path="/categorias" exact component={Categoria}/>
   </> 
 )
